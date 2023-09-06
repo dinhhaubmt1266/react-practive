@@ -1,0 +1,16 @@
+.button{
+    display: inline-block;
+    color: white;
+    padding: 20px 30px;
+    font-size: 16px;
+    margin: 10px;
+    background-color: blue;
+    width: 250px;
+    border-radius: 100rem;
+}
+
+.buttonSecondary{
+    background-color: transparent;
+    color: #727FD0;
+    border: 1px solid currentColor;
+}
