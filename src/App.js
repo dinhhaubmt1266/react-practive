@@ -1,3 +1,4 @@
+import { Pagination } from 'react-bootstrap';
 import './App.scss';
 import Button from './components/button/Button';
 import Card from './components/card/Card';
@@ -8,9 +9,17 @@ import Toggle from './components/state/Toggle';
 import Game from './components/tictactoe/Game';
 import YoutubeList from './components/youtube/YoutubeList';
 import Container from 'react-bootstrap/Container';
+import ModalAddNewUser from './components/react_pratice/ModalAddNewUser';
+import { useState } from 'react';
+
 
 
 function App() {
+  const [isShowModalAddNew, setIsShowModalAddNew] = useState(false);
+  const handleClose = () =>{
+    setIsShowModalAddNew(false);
+  }
+
   return(
     // <YoutubeList>
     //   <h4>
@@ -22,7 +31,15 @@ function App() {
     // </YoutubeList>
     <div className='app-container'>
       <Header></Header>
-      <TableUsers></TableUsers>
+      <Container>
+        <div className='my-3 add-new'>
+          <span><h3>List Users: </h3></span>
+          <button className='btn btn-success' onClick={() => setIsShowModalAddNew(true)}>Add new user</button>
+        </div>
+        <TableUsers></TableUsers>
+      </Container>
+      <ModalAddNewUser show={isShowModalAddNew} handleClose={handleClose}></ModalAddNewUser>
+
     </div>
   );
 }
