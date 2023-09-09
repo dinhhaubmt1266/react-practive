@@ -4,17 +4,22 @@ import { Table } from 'react-bootstrap';
 import { fetchAllUser } from '../../services/UserService';
 import ReactPaginate from 'react-paginate';
 import ModalAddNewUser from './ModalAddNewUser';
-
+import ModalEditUser from './ModalEditUser';
+import _ from "lodash"
 
 const TableUsers = (props) => {
     const [listUsers, setListUsers] = useState([]);
     const [totalUsers, setTotalUsers] = useState(0);
     const [totalPages, setTotalPages] = useState(0);
 
+    const [isshowEditModal, setShowEditModal] = useState(false);
     const [isShowModalAddNew, setIsShowModalAddNew] = useState(false);
+
+    const [dataUserEdit, setDataUserEdit] = useState({});
 
     const handleClose = () =>{
         setIsShowModalAddNew(false);
+        setShowEditModal(false);
     }
 
     const handleUpdateTable = (user) => {
@@ -25,9 +30,15 @@ const TableUsers = (props) => {
         getUsers(1);
     }, [])
 
+    const handelShowEditModal = (user) => {
+        // console.log(user);
+        setDataUserEdit(user);
+        setShowEditModal(true);
+    }
+
     const getUsers = async(page) => {
         let res = await fetchAllUser(page);
-        console.log(res)
+        // console.log(res)
         if(res && res.data){
             setTotalUsers(res.total);
             setListUsers(res.data);
@@ -38,9 +49,18 @@ const TableUsers = (props) => {
     }
     // console.log(listUsers)
     const handlePageClick = (event) => {
-        console.log("=>", event);
+        // console.log("=>", event);
         getUsers(+event.selected+1);
     }
+
+    const handleEditUserFromModel = (user) => {
+        let index = listUsers.findIndex(item => item.id === user.id)
+        let cloneListUsers = _.cloneDeep(listUsers)
+        cloneListUsers[index].first_name = user.first_name;
+        setListUsers(cloneListUsers);
+        setShowEditModal(false);
+    }
+
     return (
     <>
         <div className='my-3 add-new'>
@@ -54,6 +74,7 @@ const TableUsers = (props) => {
           <th>Email</th>
           <th>First Name</th>
           <th>Last Name</th>
+          <th>Actions</th>
         </tr>
       </thead>
       <tbody>
@@ -65,6 +86,10 @@ const TableUsers = (props) => {
                     <td>{item.email}</td>
                     <td>{item.first_name}</td>
                     <td>{item.last_name}</td>
+                    <td>
+                        <button className='mx-3 btn btn-info' onClick={()=>handelShowEditModal(item)}>Edit</button>
+                        <button className='mx-3 btn btn-danger'>Delete</button>
+                    </td>
                 </tr>
             )
         })
@@ -91,6 +116,7 @@ const TableUsers = (props) => {
         activeClassName="active"
     />
     <ModalAddNewUser show={isShowModalAddNew} handleClose={handleClose} handleUpdateTable={handleUpdateTable}></ModalAddNewUser>
+    <ModalEditUser show={isshowEditModal} handleClose={handleClose} dataUserEdit={dataUserEdit} handleEditUserFromModel={handleEditUserFromModel}></ModalEditUser>
     </>
     );
 };
